@@ -215,6 +215,101 @@ function tileMovement(x, y, X, Y) {
     }
   }
 }
+
+function resetCells() {
+  let count = 0;
+  
+  for (let i = 1; i < 5; i++) {
+    for (let j = 1; j < 5; j++) {
+      const cell = document.getElementById(`${i}${j}`);
+
+      if (cell.innerHTML != "") {
+        count++;
+      } else {
+        cell.className = "grid-cells"
+      }
+      
+      if (cell.className == "grid-cells active merged") cell.className = "grid-cells active";
+    }
+  }
+
+  if (count == 16) {
+    document.getElementById("lose").style.opacity = "1";
+    document.getElementById("restart").style.opacity = "1";
+  } else if (document.getElementsByClassName("game-grid").id == "moved") {
+    generateCells(1, 1);
+  }
+}
+
+function updateScore(additionalScore = 0) {
+  const gameGrid = document.querySelector(".game-grid");
+  let scoreVal = parseInt(gameGrid.dataset.value) || 0;
+  scoreVal += additionalScore;
+  gameGrid.dataset.value = scoreVal;
+
+  document.getElementById("value").innerHTML = scoreVal;
+  updateBestScore();
+}
+
+function updateBestScore() {
+  const gameGrid = document.querySelector(".game-grid");
+  let scoreVal = parseInt(gameGrid.dataset.value) || 0;
+  let bestScore = localStorage.getItem("highScore") || 0;
+
+  if (scoreVal > bestScore) {
+    localStorage.setItem("highScore", scoreVal);
+    bestScore = scoreVal;
+  }
+
+  document.getElementById("best").innerHTML = bestScore;
+}
+
+// Стилизация для всех различных плиток
+function tileColors(value, tile) {
+  const colors = {
+    2: { background: "#E1F5FE", color: "black" },
+    4: { background: "#B3E5FC", color: "black" },
+    8: { background: "#81D5FA", color: "black" },
+    16: { background: "#4FC2F8", color: "white" },
+    32: { background: "#03a9f5", color: "white" },
+    64: { background: "#0288d1", color: "white" },
+    128: { background: "#00579c", color: "white", fontSize: "50px" },
+    256: { background: "#e0c3fc", color: "black", fontSize: "50px" },
+    512: { background: "#dab6fc", color: "black", fontSize: "50px" },
+    1024: { background: "#bbadff", color: "white", fontSize: "40px" },
+    2048: { background: "#9b93fc", color: "white", fontSize: "40px" },
+    4096: { background: "#8e6bf2", color: "white", fontSize: "40px" }
+  };
+
+  const tileStyle = colors[value];
+  tile.style.background = tileStyle.background;
+  tile.style.color = tileStyle.color;
+  if (tileStyle.fontSize) {
+    tile.style.fontSize = tileStyle.fontSize;
+  }
+}
+
+// Перезапустить игру
+function restart() {
+  for (let i = 1; i <= 4; i++) {
+    for (let j = 1; j <= 4; j++) {
+      const cell = document.getElementById(`${i}${j}`);
+      while (cell.firstChild) {
+        cell.removeChild(cell.firstChild);
+      }
+      cell.className = "grid-cells";
+    }
+  }
+  document.querySelector(".game-grid").dataset.value = 0;
+  updateScore();
+  generateCells(2, 0);
+  document.getElementById("lose").style.opacity = "0";
+  document.getElementById("restart").style.opacity = "0";
+}
+
+document.getElementById("restartIcon").addEventListener("click", restart);
+document.getElementById("restart").addEventListener("click", restart);
+
 // Функция для обработки свайпов
 function setupSwipe() {
   let touchStartX = 0;
@@ -316,97 +411,3 @@ window.addEventListener('load', function() {
   setupSwipe();
   setupMobileControls();
 });
-
-function resetCells() {
-  let count = 0;
-  
-  for (let i = 1; i < 5; i++) {
-    for (let j = 1; j < 5; j++) {
-      const cell = document.getElementById(`${i}${j}`);
-
-      if (cell.innerHTML != "") {
-        count++;
-      } else {
-        cell.className = "grid-cells"
-      }
-      
-      if (cell.className == "grid-cells active merged") cell.className = "grid-cells active";
-    }
-  }
-
-  if (count == 16) {
-    document.getElementById("lose").style.opacity = "1";
-    document.getElementById("restart").style.opacity = "1";
-  } else if (document.getElementsByClassName("game-grid").id == "moved") {
-    generateCells(1, 1);
-  }
-}
-
-function updateScore(additionalScore = 0) {
-  const gameGrid = document.querySelector(".game-grid");
-  let scoreVal = parseInt(gameGrid.dataset.value) || 0;
-  scoreVal += additionalScore;
-  gameGrid.dataset.value = scoreVal;
-
-  document.getElementById("value").innerHTML = scoreVal;
-  updateBestScore();
-}
-
-function updateBestScore() {
-  const gameGrid = document.querySelector(".game-grid");
-  let scoreVal = parseInt(gameGrid.dataset.value) || 0;
-  let bestScore = localStorage.getItem("highScore") || 0;
-
-  if (scoreVal > bestScore) {
-    localStorage.setItem("highScore", scoreVal);
-    bestScore = scoreVal;
-  }
-
-  document.getElementById("best").innerHTML = bestScore;
-}
-
-// Стилизация для всех различных плиток
-function tileColors(value, tile) {
-  const colors = {
-    2: { background: "#E1F5FE", color: "black" },
-    4: { background: "#B3E5FC", color: "black" },
-    8: { background: "#81D5FA", color: "black" },
-    16: { background: "#4FC2F8", color: "white" },
-    32: { background: "#03a9f5", color: "white" },
-    64: { background: "#0288d1", color: "white" },
-    128: { background: "#00579c", color: "white", fontSize: "50px" },
-    256: { background: "#e0c3fc", color: "black", fontSize: "50px" },
-    512: { background: "#dab6fc", color: "black", fontSize: "50px" },
-    1024: { background: "#bbadff", color: "white", fontSize: "40px" },
-    2048: { background: "#9b93fc", color: "white", fontSize: "40px" },
-    4096: { background: "#8e6bf2", color: "white", fontSize: "40px" }
-  };
-
-  const tileStyle = colors[value];
-  tile.style.background = tileStyle.background;
-  tile.style.color = tileStyle.color;
-  if (tileStyle.fontSize) {
-    tile.style.fontSize = tileStyle.fontSize;
-  }
-}
-
-// Перезапустить игру
-function restart() {
-  for (let i = 1; i <= 4; i++) {
-    for (let j = 1; j <= 4; j++) {
-      const cell = document.getElementById(`${i}${j}`);
-      while (cell.firstChild) {
-        cell.removeChild(cell.firstChild);
-      }
-      cell.className = "grid-cells";
-    }
-  }
-  document.querySelector(".game-grid").dataset.value = 0;
-  updateScore();
-  generateCells(2, 0);
-  document.getElementById("lose").style.opacity = "0";
-  document.getElementById("restart").style.opacity = "0";
-}
-
-document.getElementById("restartIcon").addEventListener("click", restart);
-document.getElementById("restart").addEventListener("click", restart);
