@@ -215,6 +215,107 @@ function tileMovement(x, y, X, Y) {
     }
   }
 }
+// Функция для обработки свайпов
+function setupSwipe() {
+  let touchStartX = 0;
+  let touchStartY = 0;
+  const gameArea = document.querySelector('.game-board');
+
+  gameArea.addEventListener('touchstart', function(e) {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    e.preventDefault();
+  }, { passive: false });
+
+  gameArea.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+  }, { passive: false });
+
+  gameArea.addEventListener('touchend', function(e) {
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+    
+    const diffX = touchEndX - touchStartX;
+    const diffY = touchEndY - touchStartY;
+    const absDiffX = Math.abs(diffX);
+    const absDiffY = Math.abs(diffY);
+    
+    // Определяем направление свайпа
+    if (Math.max(absDiffX, absDiffY) > 30) { // Порог чувствительности
+      if (absDiffX > absDiffY) {
+        // Горизонтальный свайп
+        if (diffX > 0) {
+          simulateKeyPress(39); // Вправо
+        } else {
+          simulateKeyPress(37); // Влево
+        }
+      } else {
+        // Вертикальный свайп
+        if (diffY > 0) {
+          simulateKeyPress(40); // Вниз
+        } else {
+          simulateKeyPress(38); // Вверх
+        }
+      }
+    }
+  }, { passive: false });
+}
+
+// Симуляция нажатия клавиши
+function simulateKeyPress(keyCode) {
+  const event = new KeyboardEvent('keydown', {
+    keyCode: keyCode,
+    which: keyCode,
+    bubbles: true,
+    cancelable: true
+  });
+  document.dispatchEvent(event);
+}
+
+// Обработка кнопок управления
+function setupMobileControls() {
+  document.getElementById('up').addEventListener('click', () => simulateKeyPress(38));
+  document.getElementById('down').addEventListener('click', () => simulateKeyPress(40));
+  document.getElementById('left').addEventListener('click', () => simulateKeyPress(37));
+  document.getElementById('right').addEventListener('click', () => simulateKeyPress(39));
+  
+  // Добавляем обработку долгого нажатия
+  const buttons = document.querySelectorAll('.control-btn');
+  buttons.forEach(btn => {
+    btn.addEventListener('touchstart', function(e) {
+      this.isPressed = true;
+      const direction = this.id;
+      const simulate = () => {
+        if (this.isPressed) {
+          switch(direction) {
+            case 'up': simulateKeyPress(38); break;
+            case 'down': simulateKeyPress(40); break;
+            case 'left': simulateKeyPress(37); break;
+            case 'right': simulateKeyPress(39); break;
+          }
+          setTimeout(simulate, 150); // Повтор каждые 150мс
+        }
+      };
+      simulate();
+      e.preventDefault();
+    });
+    
+    btn.addEventListener('touchend', function(e) {
+      this.isPressed = false;
+      e.preventDefault();
+    });
+    
+    btn.addEventListener('touchcancel', function() {
+      this.isPressed = false;
+    });
+  });
+}
+
+// Инициализация сенсорного управления
+window.addEventListener('load', function() {
+  setupSwipe();
+  setupMobileControls();
+});
 
 function resetCells() {
   let count = 0;
