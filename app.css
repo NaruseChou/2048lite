@@ -353,6 +353,158 @@ div > div > div > div {
     box-shadow: 0 0 6px #fff;
     border-radius: 50%;
 }
+/* Адаптивность для планшетов и телефонов */
+@media (max-width: 768px) {
+  .head {
+    width: 90vw;
+    height: 100px;
+  }
+  
+  .title {
+    font-size: 50px;
+  }
+  
+  .score, .bestScore {
+    width: 80px;
+    height: 70px;
+    font-size: 20px;
+  }
+  
+  .game-board, .game-grid {
+    width: 90vw;
+    height: 90vw;
+    max-width: 450px;
+    max-height: 450px;
+  }
+  
+  .game-row, .grid-row {
+    height: 22.5vw;
+    max-height: 112px;
+  }
+  
+  .game-cells, .grid-cells {
+    width: 21vw;
+    height: 21vw;
+    max-width: 105px;
+    max-height: 105px;
+    font-size: 30px;
+  }
+  
+  .tile {
+    width: 21vw;
+    height: 21vw;
+    max-width: 105px;
+    max-height: 105px;
+    font-size: 30px;
+  }
+  
+  .instructions {
+    width: 90vw;
+    top: auto;
+    bottom: 120px;
+    font-size: 16px;
+  }
+  
+  .contactContainer {
+    width: 90vw;
+    bottom: 70px;
+  }
+  
+  .arrow {
+    display: none;
+  }
+  
+  .author {
+    width: 90vw;
+  }
+}
+
+@media (max-width: 480px) {
+  .head {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 10px 0;
+  }
+  
+  .title {
+    font-size: 40px;
+    margin-right: 10px;
+  }
+  
+  #restartIcon {
+    margin-right: 10px;
+    transform: scale(0.8);
+  }
+  
+  .score, .bestScore {
+    width: 70px;
+    height: 60px;
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .game-status#lose {
+    font-size: 28px;
+    top: 120px;
+  }
+  
+  .restartBtn {
+    bottom: 40%;
+  }
+  
+  .instructions {
+    font-size: 14px;
+    bottom: 100px;
+  }
+  
+  .contactContainer {
+    bottom: 50px;
+  }
+}
+
+/* Стили для кнопок управления на мобильных */
+.mobile-controls {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+  z-index: 500;
+}
+
+@media (max-width: 768px) {
+  .mobile-controls {
+    display: block;
+  }
+}
+
+.control-row {
+  display: flex;
+  justify-content: center;
+}
+
+.control-btn {
+  width: 60px;
+  height: 60px;
+  margin: 5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.7);
+  border: 2px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.control-btn:active {
+  background: rgba(200, 200, 200, 0.7);
+}
 
 .codepen:hover {
     box-shadow: 0 0 10px rgb(255, 246, 114);
